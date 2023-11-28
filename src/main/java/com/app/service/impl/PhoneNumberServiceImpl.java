@@ -45,9 +45,6 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 			if (countryId.isPresent()) {
 				Long selectedCountryId = countryId.get();
 
-//				countryRespository.findById(selectedCountryId).orElseThrow(
-//						() -> new ResourceNotFoundException("Country " + selectedCountryId + " not found"));
-
 				if (!countryRespository.existsById(selectedCountryId)) {
 					throw new ResourceNotFoundException("Country " + selectedCountryId + " not found");
 				}
