@@ -27,7 +27,7 @@ public class PhoneNumbersController {
 			@RequestParam(name = "country", required = false) Optional<Long> countryId,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "100") int size,
-			@RequestParam(name = "orderBy", defaultValue = "id") String orderBy,
+			@RequestParam(name = "orderBy", defaultValue = "customerId") String orderBy,
 			@RequestParam(name = "direction", defaultValue = "descending") String direction) {
 		Page<PhoneNumberResponse> phoneNumbers = phoneNumberService.searchPhoneNumbers(status, countryId, page, size,
 				orderBy, direction);

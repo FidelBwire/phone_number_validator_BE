@@ -24,7 +24,7 @@ public class CountryServiceImpl implements CountryService {
 
 	private CountryResponse parseCountryResponse(Country country) {
 		return CountryResponse.builder().countryId(country.getCountryId()).name(country.getName())
-				.code(country.getCode().getCode()).build();
+				.code(country.getCode()).build();
 	}
 
 }

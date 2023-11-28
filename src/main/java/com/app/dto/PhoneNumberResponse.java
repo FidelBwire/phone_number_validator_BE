@@ -14,4 +14,5 @@ public class PhoneNumberResponse {
 	private Long customerId;
 	private String customer;
 	private String country;
+	private String status;
 }

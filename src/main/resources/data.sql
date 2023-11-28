@@ -1,48 +1,39 @@
-CREATE VIEW IF NOT EXISTS phone_numbers_view_1 AS 
-SELECT phone_numbers.id, ('(' || trim(code, '+') || ') '  || number) AS phone_number,
-       country_codes.country_id AS country_id, countries.validation_pattern,
-       customers.customer_id, customers.name AS customer, countries.name AS country
-  FROM phone_numbers phone_numbers
-LEFT JOIN (
-    SELECT id,
+CREATE VIEW IF NOT EXISTS phone_numbers_view AS 
+SELECT ROWID AS row_number,
+       id AS customer_id,
+       customer.name AS customer,
+       phone,
        country_id,
-       code
-  FROM country_codes
-) country_codes ON phone_numbers.code_id = country_codes.id
-LEFT JOIN (
-    SELECT customer_id,
-       name
-  FROM customers
-) customers ON phone_numbers.customer_id = customers.customer_id
-LEFT JOIN (
+       countries.name AS country,
+       validation_pattern,
+       CASE WHEN (/* Check for (237) pattern */phone LIKE '(237)%' AND 
+                  substr(phone, 6, 1) IN (' ', NULL) AND 
+                  substr(phone, 7, 1) IN ('2', '3', '6', '8') AND 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9]' OR 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR 
+                 (/* Check for (251) pattern */phone LIKE '(251)%' AND 
+                  substr(phone, 6, 1) IN (' ', NULL) AND 
+                  substr(phone, 7, 1) BETWEEN '1' AND '9' AND 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR 
+                 (/* Check for (212) pattern */phone LIKE '(212)%' AND 
+                  substr(phone, 6, 1) IN (' ', NULL) AND 
+                  substr(phone, 7, 1) BETWEEN '5' AND '9' AND 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR 
+                 (/* Check for (258) pattern */phone LIKE '(258)%' AND 
+                  substr(phone, 6, 1) IN (' ', NULL) AND 
+                  substr(phone, 7, 1) IN ('2', '8') AND 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9]' OR 
+                  substr(phone, 8) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR 
+                 (/* Check for (256) pattern */phone LIKE '(256)%' AND 
+                  substr(phone, 6, 1) IN (' ', NULL) AND 
+                  substr(phone, 7) GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') THEN 'Valid' ELSE 'Invalid' END AS status
+FROM customer customer
+LEFT JOIN
+(
     SELECT country_id,
-       name,
-       validation_pattern
-  FROM countries
-) countries ON country_codes.country_id = countries.country_id;
---CREATE VIEW IF NOT EXISTS phone_numbers_view AS 
---SELECT phone_numbers.id, ('(' || trim(code, '+') || ') '  || number) AS phone_number,
---       country_codes.country_id AS country_id,
---       CASE
---        WHEN ('(' || trim(code, '+') || ') '  || number) REGEXP countries.validation_pattern THEN 'Valid'
---        ELSE 'Invalid'
---      END AS status,
---       customers.customer_id, customers.name AS customer, countries.name AS country
---  FROM phone_numbers phone_numbers
---LEFT JOIN (
---    SELECT id,
---       country_id,
---       code
---  FROM country_codes
---) country_codes ON phone_numbers.code_id = country_codes.id
---LEFT JOIN (
---    SELECT customer_id,
---       name
---  FROM customers
---) customers ON phone_numbers.customer_id = customers.customer_id
---LEFT JOIN (
---    SELECT country_id,
---       name,
---       validation_pattern
---  FROM countries
---) countries ON country_codes.country_id = countries.country_id;
+           name,
+           validation_pattern,
+           code
+       FROM countries
+)
+countries ON customer.phone LIKE '(' || code || '%'

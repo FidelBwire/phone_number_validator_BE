@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.app.dto.PhoneNumberResponse;
 import com.app.exception.ResourceNotFoundException;
@@ -44,14 +45,18 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 			if (countryId.isPresent()) {
 				Long selectedCountryId = countryId.get();
 
-				countryRespository.findById(selectedCountryId).orElseThrow(
-						() -> new ResourceNotFoundException("Country " + selectedCountryId + " not found"));
+//				countryRespository.findById(selectedCountryId).orElseThrow(
+//						() -> new ResourceNotFoundException("Country " + selectedCountryId + " not found"));
+
+				if (!countryRespository.existsById(selectedCountryId)) {
+					throw new ResourceNotFoundException("Country " + selectedCountryId + " not found");
+				}
 
 				phoneNumbersView.setCountryId(selectedCountryId);
 			}
 
 			if (status.isPresent()) {
-				String selectedStatus = status.get();
+				String selectedStatus = StringUtils.capitalize(status.get().toLowerCase());
 				if (!Arrays.asList("Valid", "Invalid").contains(selectedStatus)) {
 					throw new ResourceNotFoundException("Invalid status");
 				}
@@ -71,10 +76,9 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 	}
 
 	private PhoneNumberResponse parsePhoneNumberResponse(PhoneNumbersView phoneNumber) {
-//		String validity = phoneNumber.getPhoneNumber().matches(phoneNumber.get)
-		return PhoneNumberResponse.builder().phoneNumber(phoneNumber.getPhoneNumber())
-				.countryId(phoneNumber.getCountryId()).customerId(phoneNumber.getCustomerId())
-				.customer(phoneNumber.getCustomer()).country(phoneNumber.getCountry()).build();
+		return PhoneNumberResponse.builder().phoneNumber(phoneNumber.getPhone()).countryId(phoneNumber.getCountryId())
+				.customerId(phoneNumber.getCustomerId()).customer(phoneNumber.getCustomer())
+				.country(phoneNumber.getCountry()).status(phoneNumber.getStatus()).build();
 	}
 
 }
