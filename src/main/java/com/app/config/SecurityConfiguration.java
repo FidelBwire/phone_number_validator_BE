@@ -23,7 +23,7 @@ public class SecurityConfiguration {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return web -> web.ignoring().requestMatchers(HttpMethod.OPTIONS, "/**").requestMatchers(HttpMethod.GET,
-				"/phone-numbers");
+				"/phone-numbers/**", "/countries/**");
 	}
 
 	@Bean
