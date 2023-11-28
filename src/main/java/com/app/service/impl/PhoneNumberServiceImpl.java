@@ -44,9 +44,9 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 			if (countryId.isPresent()) {
 				Long selectedCountryId = countryId.get();
 
-				if (countryRespository.existsById(selectedCountryId)) {
-					throw new ResourceNotFoundException("Country " + selectedCountryId + " not found");
-				}
+				countryRespository.findById(selectedCountryId).orElseThrow(
+						() -> new ResourceNotFoundException("Country " + selectedCountryId + " not found"));
+
 				phoneNumbersView.setCountryId(selectedCountryId);
 			}
 
@@ -71,6 +71,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 	}
 
 	private PhoneNumberResponse parsePhoneNumberResponse(PhoneNumbersView phoneNumber) {
+//		String validity = phoneNumber.getPhoneNumber().matches(phoneNumber.get)
 		return PhoneNumberResponse.builder().phoneNumber(phoneNumber.getPhoneNumber())
 				.countryId(phoneNumber.getCountryId()).customerId(phoneNumber.getCustomerId())
 				.customer(phoneNumber.getCustomer()).country(phoneNumber.getCountry()).build();
