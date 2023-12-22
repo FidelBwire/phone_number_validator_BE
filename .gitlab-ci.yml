@@ -1,0 +1,23 @@
+services:
+    - docker:24.0.6-dind
+
+stages:
+    - build_jar
+    - build_and_push_docker_image
+    - deploy
+
+variables:
+    SUBMODULE_PATH: "Discovery_Server"
+    # REPO_URL: "https://github.com/FidelBwire/app_configs.git"
+    REPO_URL: "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/e_comm_app/application.git"
+
+build_jar:
+    image: maven:3.8.4-amazoncorretto-17
+    stage: build_jar
+    before_script:
+        # - source .${CI_COMMIT_REF_NAME}.env
+        - yum update -y
+        - yum install -y git
+    script:
+        # - git clone $REPO_URL
+        - echo "Trying"

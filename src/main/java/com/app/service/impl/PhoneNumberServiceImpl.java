@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.app.dto.PhoneNumberResponse;
-import com.app.exception.ResourceNotFoundException;
+import com.app.exception.handler.ResourceNotFoundException;
 import com.app.model.view.PhoneNumbersView;
 import com.app.repository.CountryRespository;
 import com.app.repository.PhoneNumbersViewRepository;

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.app.exception.ApiError;
-import com.app.exception.ResourceNotFoundException;
 
 @RestControllerAdvice
 public class RestCustomExceptionHandler extends RestExceptionHandler {

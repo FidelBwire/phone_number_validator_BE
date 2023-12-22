@@ -1,4 +1,4 @@
-package com.app.exception;
+package com.app.exception.handler;
 
 public class ResourceNotFoundException extends RuntimeException {
 
